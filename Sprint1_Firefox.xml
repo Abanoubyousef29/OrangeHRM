@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="All Test Suite">
+    <parameter name="browserName" value="firefox"/>
+
+    <test name="check that an all side URL are working">
+        <classes>
+            <class name="TestCases.TC01_Login">
+                <methods>
+                    <include name="loginWithValidEmailAndValidPassword_P"/>
+                </methods>
+            </class>
+
+            <class name="TestCases.TC02_SideBar">
+                <methods>
+                    <include name="checkTapsRedirection_P"/>
+                </methods>
+            </class>
+
+        </classes>
+    </test>
+
+
+</suite>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="All Test Suite">
+
+    <parameter name="browser" value=""></parameter>
+
+    <test name="check that a pim can be created">
+        <classes>
+            <class name="TestCases.TC01_Login">
+                <methods>
+                    <include name="loginWithValidEmailAndValidPassword_P"/>
+                </methods>
+            </class>
+
+            <class name="TestCases.TC02_SideBar">
+                <methods>
+                    <include name="pimPageIsClickable_P"/>
+                </methods>
+            </class>
+
+            <class name="TestCases.TC05_Bim">
+                <methods>
+                    <include name="addNewPimButtonIsWorking_P"/>
+                </methods>
+            </class>
+
+            <class name="TestCases.TC06_NewBimRegister">
+                <methods>
+                    <include name="fillNewBimRegisterPage_P"/>
+                </methods>
+            </class>
+
+        </classes>
+    </test>
+
+    <test name="check that i can search by employee Id">
+        <classes>
+            <class name="TestCases.TC01_Login">
+                <methods>
+                    <include name="loginWithValidEmailAndValidPassword_P"/>
+                </methods>
+            </class>
+
+            <class name="TestCases.TC02_SideBar">
+                <methods>
+                    <include name="pimPageIsClickable_P"/>
+                </methods>
+            </class>
+
+            <class name="TestCases.TC05_Bim">
+                <methods>
+                    <include name="searchByEmployeeId_P"/>
+                </methods>
+            </class>
+
+        </classes>
+    </test>
+</suite>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="All Test Suite">
+
+    <parameter name="browserName" value="firefox"/>
+
+    <test name="check that an admin can be created">
+        <classes>
+            <class name="TestCases.TC01_Login">
+                <methods>
+                    <include name="loginWithValidEmailAndValidPassword_P"/>
+                </methods>
+            </class>
+
+            <class name="TestCases.TC02_SideBar">
+                <methods>
+                    <include name="adminPageIsClickable_P"/>
+                </methods>
+            </class>
+
+            <class name="TestCases.TC03_Admin">
+                <methods>
+                    <include name="addNewAdminButtonIsWorking_P"/>
+                </methods>
+            </class>
+
+            <class name="TestCases.TC04_NewAdminRegister">
+                <methods>
+                    <include name="fillNewAdminRegisterPage_P"/>
+                </methods>
+            </class>
+
+        </classes>
+    </test>
+
+    <test name="check that i can search by username">
+        <classes>
+            <class name="TestCases.TC01_Login">
+                <methods>
+                    <include name="loginWithValidEmailAndValidPassword_P"/>
+                </methods>
+            </class>
+
+            <class name="TestCases.TC02_SideBar">
+                <methods>
+                    <include name="adminPageIsClickable_P"/>
+                </methods>
+            </class>
+
+            <class name="TestCases.TC03_Admin">
+                <methods>
+                    <include name="searchByUserName_P"/>
+                </methods>
+            </class>
+
+        </classes>
+    </test>
+
+</suite>
