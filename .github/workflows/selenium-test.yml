@@ -40,7 +40,7 @@ jobs:
       - name: Run Selenium Tests
         run: mvn clean verify
 
-      - name: Print Maven local repository path
+      - name: Print Maven test results directory
         run: |
-          echo "=== Maven Local Repository Path ==="
-          mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout
+          echo "=== Maven Test Results Directory ==="
+          mvn help:evaluate -Dexpression=surefire.reports.directory -q -DforceStdout
