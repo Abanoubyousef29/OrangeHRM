@@ -2,7 +2,7 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="All Test Suite">
 
-    <parameter name="browser" value="chrome-headless"></parameter>
+    <parameter name="browserName" value="chrome-headless"></parameter>
 
     <test name="check that an admin can be created">
         <classes>
