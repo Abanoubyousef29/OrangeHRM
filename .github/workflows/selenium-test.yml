@@ -50,10 +50,10 @@ jobs:
       - name: Extract test results
         id: extract_results
         run: |
-          total_tests=$(xmlstarlet sel -t -v "/testsuite/@total" target/surefire-reports/testng-results.xml)
-          failed_tests=$(xmlstarlet sel -t -v "/testsuite/@failed" target/surefire-reports/testng-results.xml)
-          skipped_tests=$(xmlstarlet sel -t -v "/testsuite/@skipped" target/surefire-reports/testng-results.xml)
-          passed_tests=$(xmlstarlet sel -t -v "/testsuite/@passed" target/surefire-reports/testng-results.xml)
+          total_tests=$(xmlstarlet sel -t -v "/testng-results/@total" target/surefire-reports/testng-results.xml)
+          failed_tests=$(xmlstarlet sel -t -v "/testng-results/@failed" target/surefire-reports/testng-results.xml)
+          skipped_tests=$(xmlstarlet sel -t -v "/testng-results/@skipped" target/surefire-reports/testng-results.xml)
+          passed_tests=$(xmlstarlet sel -t -v "/testng-results/@passed" target/surefire-reports/testng-results.xml)
           echo "::set-output name=passed::$passed_tests"
           echo "::set-output name=failed::$failed_tests"
           echo "::set-output name=skipped::$skipped_tests"
