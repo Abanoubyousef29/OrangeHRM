@@ -52,8 +52,7 @@ jobs:
         run: |
           total_tests=$(xmlstarlet sel -t -v "/testsuite/@tests" target/surefire-reports/TEST-total.xml)
           failed_tests=$(xmlstarlet sel -t -v "/testsuite/@failures" target/surefire-reports/TEST-total.xml)
-          skipped_tests=$(xmlstarlet sel -t -v "/testsuite/@skipped" target/surefire-reports/TEST-total.xml)
-          passed_tests=$((total_tests - failed_tests - skipped_tests))
+         
           echo "::set-output name=passed::$passed_tests"
           echo "::set-output name=failed::$failed_tests"
           echo "::set-output name=skipped::$skipped_tests"
