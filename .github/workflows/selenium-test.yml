@@ -61,9 +61,9 @@ jobs:
       - name: Display test results summary
         if: always()  # Ensure this step always runs, regardless of previous steps' outcomes
         run: |
-          passed=$(echo "${{ steps.extract_results.outputs.passed }}")
-          failed=$(echo "${{ steps.extract_results.outputs.failed }}")
-          total=$(echo "${{ steps.extract_results.outputs.total }}")
+          total_tests=$(xmlstarlet sel -t -v "/testsuite/@tests" path/to/surefire-report.xml)
+          failed_tests=$(xmlstarlet sel -t -v "/testsuite/@failures" path/to/surefire-report.xml)
+          passed_tests=$((total_tests - failed_tests))
           echo "Total test cases: $total"
           echo "Passed: $passed"
           echo "Failed: $failed"
