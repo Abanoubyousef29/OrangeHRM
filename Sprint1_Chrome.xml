@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="All Test Suite">
-    <parameter name="browser" value=""></parameter>
+    <parameter name="browser" value="chrome-headless"></parameter>
 
     <test name="check that an all side URL are working">
         <classes>
