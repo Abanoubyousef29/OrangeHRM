@@ -20,6 +20,9 @@ jobs:
         with:
           java-version: '17'
           distribution: 'adopt'
+          server-id: github
+          server-username: ${{ github.actor }}
+          server-password: ${{ github.token }}
 
       - name: Cache Maven packages
         uses: actions/cache@v2
