@@ -15,6 +15,7 @@ public class TC05_Bim extends TestBase {
 
     @Test(priority = 2, description = "check that i can search by employee id")
     public void searchByEmployeeId_P() throws InterruptedException {
+        Thread.sleep(1000);
         new P05_BimPage(driver).fillEmployeeIdField(employeeID).clickSearchButton();
         Thread.sleep(1500);
         Assert.assertTrue(new P05_BimPage(driver).employeeIdColumInTable().contains(employeeID));

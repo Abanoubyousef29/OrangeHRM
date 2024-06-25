@@ -22,7 +22,8 @@ public class P05_BimPage {
         return this;
     }
 
-    public P05_BimPage fillEmployeeIdField(String id) {
+    public P05_BimPage fillEmployeeIdField(String id) throws InterruptedException {
+        Thread.sleep(1000);
         driver.findElement(this.EMPLOYEE_ID_FIELD).sendKeys(id);
         return this;
     }
