@@ -27,24 +27,49 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y firefox
-          wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-          sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-          sudo apt-get update
           sudo apt-get install -y google-chrome-stable
 
+      - name: Install xmlstarlet
+        run: |
+          sudo apt-get install -y xmlstarlet
 
       - name: Build with Maven and generate Surefire report
         run: mvn clean verify -Dsurefire.reportName=TEST-total
 
-
-
-      - name: Check Surefire XML report
+      - name: List contents of target/surefire-reports
         run: |
-              if [[ -f "target/surefire-reports/TEST-total.xml" ]]; then
-                total_tests=$(grep -oP '(?<=<tests run=")\d+' target/surefire-reports/TEST-TestSuite.xml | tail -1)
-                echo "Total number of test cases: $total_tests"
-              else
-                echo "Surefire XML report not found. Directory contents:"
-                ls -l target/surefire-reports/
-                exit 1
-              fi
+          ls -l target/surefire-reports
+
+      - name: Display Surefire XML report
+        if: always()  # Ensure this step always runs, regardless of previous steps' outcomes
+        run: |
+          echo "Contents of Surefire XML report (TEST-TestSuite.xml):"
+          cat target/surefire-reports/TEST-TestSuite.xml || echo "Surefire XML report not found."
+
+      - name: Extract test results
+        id: extract_results
+        run: |
+          ls -l target/surefire-reports  # Verify contents of surefire-reports directory
+          passed=$(xmlstarlet sel -t -v "count(//testcase[@status='PASS'])" target/surefire-reports/TEST-TestSuite.xml)
+          failed=$(xmlstarlet sel -t -v "count(//testcase[@status='FAIL'])" target/surefire-reports/TEST-TestSuite.xml)
+          total=$(xmlstarlet sel -t -v "count(//testcase)" target/surefire-reports/TEST-TestSuite.xml)
+          echo "::set-output name=passed::$passed"
+          echo "::set-output name=failed::$failed"
+          echo "::set-output name=total::$total"
+
+      - name: Display test results summary
+        if: always()  # Ensure this step always runs, regardless of previous steps' outcomes
+        run: |
+          passed=$(echo "${{ steps.extract_results.outputs.passed }}")
+          failed=$(echo "${{ steps.extract_results.outputs.failed }}")
+          total=$(echo "${{ steps.extract_results.outputs.total }}")
+          echo "Total test cases: $total"
+          echo "Passed: $passed"
+          echo "Failed: $failed"
+
+      - name: Upload Surefire XML report as artifact
+        if: success()  # Only upload artifact if previous steps were successful
+        uses: actions/upload-artifact@v2
+        with:
+          name: surefire-reports
+          path: target/surefire-reports
