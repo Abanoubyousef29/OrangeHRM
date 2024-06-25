@@ -29,12 +29,13 @@ jobs:
           sudo apt-get install -y firefox
           sudo apt-get install -y google-chrome-stable
 
-      - name: Install xmlstarlet
+      - name: Install xmlstarlet and xvfb
         run: |
-          sudo apt-get install -y xmlstarlet
+          sudo apt-get install -y xmlstarlet xvfb
 
-      - name: Build with Maven and generate Surefire report
-        run: mvn clean verify -Dsurefire.reportName=TEST-total
+      - name: Start xvfb and build with Maven
+        run: |
+          xvfb-run --auto-servernum mvn clean verify -Dsurefire.reportName=TEST-total
 
       - name: List contents of target/surefire-reports
         run: |
