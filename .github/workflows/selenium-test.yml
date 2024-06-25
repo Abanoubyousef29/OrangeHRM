@@ -1,4 +1,4 @@
-name: orange builf
+name: Java 17 Test on Chrome and Firefox
 
 on:
   push:
@@ -22,10 +22,14 @@ jobs:
         with:
           java-version: '17'
 
-      - name: Set up Chrome and Firefox
-        uses: uber-web/browser-action@v1
-        with:
-          browsers: 'chrome, firefox'
+      - name: Install Chrome and Firefox
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y firefox
+          wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
 
       - name: Build with Maven and generate Surefire report
         run: mvn clean verify -Dsurefire.reportName=TEST-total
@@ -35,5 +39,3 @@ jobs:
         run: |
           total_tests=$(grep -oP '(?<=<tests run=")\d+' target/surefire-reports/TEST-total.xml | tail -1)
           echo "Total number of test cases: $total_tests"
-
-      # Add more steps as necessary for your testing process
