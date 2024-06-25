@@ -45,29 +45,27 @@ jobs:
         run: |
           echo "=== Test Results ==="
           
-          # Check for XML test result files
-          if compgen -G "target/surefire-reports/*.xml" > /dev/null; then
-            # Count total number of tests
-            total_tests=$(grep -oE '<testsuite tests="[0-9]+"' $(ls target/surefire-reports/*.xml) | grep -oE '[0-9]+' | tail -1)
-            if [ -z "$total_tests" ]; then
-              total_tests=0
-            fi
-            
-            # Count number of passed tests
-            passed_tests=$(grep -oE '<testsuite tests="[0-9]+" failures="0" errors="0" skipped="0">' $(ls target/surefire-reports/*.xml) | grep -oE '[0-9]+' | tail -1)
-            if [ -z "$passed_tests" ]; then
-              passed_tests=0
-            fi
-            
-            # Count number of failed tests
-            failed_tests=$(grep -oE '<testsuite tests="[0-9]+" failures="[1-9][0-9]*" errors="0" skipped="0">' $(ls target/surefire-reports/*.xml) | grep -oE '[0-9]+' | tail -1)
-            if [ -z "$failed_tests" ]; then
-              failed_tests=0
-            fi
-            
-            echo "Total Tests: $total_tests"
-            echo "Passed Tests: $passed_tests"
-            echo "Failed Tests: $failed_tests"
-          else
-            echo "No XML test result files found in target/surefire-reports/."
+          # Print contents of TestSuite.txt
+          cat TestSuite.txt || echo "TestSuite.txt not found or empty"
+
+          # Extract total test cases
+          total_tests=$(grep -oE 'Tests run: [0-9]+' TestSuite.txt | grep -oE '[0-9]+')
+          if [ -z "$total_tests" ]; then
+            total_tests=0
           fi
+
+          # Extract passed test cases
+          passed_tests=$(grep -oE 'Tests run: [0-9]+, Failures: [0-9]+, Errors: [0-9]+, Skipped: [0-9]+' TestSuite.txt | grep -oE 'Failures: [0-9]+,' | grep -oE '[0-9]+')
+          if [ -z "$passed_tests" ]; then
+            passed_tests=0
+          fi
+
+          # Extract failed test cases
+          failed_tests=$(grep -oE 'Tests run: [0-9]+, Failures: [0-9]+, Errors: [0-9]+, Skipped: [0-9]+' TestSuite.txt | grep -oE 'Errors: [0-9]+,' | grep -oE '[0-9]+')
+          if [ -z "$failed_tests" ]; then
+            failed_tests=0
+          fi
+
+          echo "Total Test Cases: $total_tests"
+          echo "Passed Test Cases: $passed_tests"
+          echo "Failed Test Cases: $failed_tests"
