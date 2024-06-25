@@ -19,6 +19,7 @@ public class DriverFactory {
             case "chrome-headless":
                 ChromeOptions chromeOptions = new ChromeOptions();
                 chromeOptions.addArguments("--headless");
+                chromeOptions.addArguments("--no-sandbox"); // Required for GitHub Actions
                 chromeOptions.addArguments("start-maximized");
                 chromeOptions.addArguments("--disable-web-security");
                 chromeOptions.addArguments("--no-proxy-server");
@@ -29,6 +30,7 @@ public class DriverFactory {
             case "firefox-headless":
                 FirefoxBinary firefoxBinary = new FirefoxBinary();
                 firefoxBinary.addCommandLineOptions("--headless");
+                firefoxBinary.addCommandLineOptions("--no-sandbox"); // Required for GitHub Actions
                 firefoxBinary.addCommandLineOptions("--window-size=1280x720");
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
                 firefoxOptions.setBinary(firefoxBinary);
