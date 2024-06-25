@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest  # Use Windows runner
 
     steps:
       - name: Checkout repository
@@ -25,50 +25,29 @@ jobs:
 
       - name: Set up ChromeDriver and GeckoDriver
         run: |
-          CHROME_DRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
-          wget -qP /tmp https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip
-          unzip -q /tmp/chromedriver_linux64.zip -d /tmp
-          sudo mv /tmp/chromedriver /usr/local/bin/chromedriver
-          sudo chmod +x /usr/local/bin/chromedriver
+          choco install chromedriver
+          choco install geckodriver
 
-          GECKO_DRIVER_VERSION=$(curl -sS https://api.github.com/repos/mozilla/geckodriver/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")')
-          wget -qO /tmp/geckodriver.tar.gz https://github.com/mozilla/geckodriver/releases/download/$GECKO_DRIVER_VERSION/geckodriver-$GECKO_DRIVER_VERSION-linux64.tar.gz
-          tar -xzf /tmp/geckodriver.tar.gz -C /tmp
-          sudo mv /tmp/geckodriver /usr/local/bin/geckodriver
-          sudo chmod +x /usr/local/bin/geckodriver
-
-      - name: Run Selenium Tests and Generate Test Report
-        run: |
-          mvn clean verify
-          mvn surefire-report:report-only
-
-      - name: Print Maven Test Results Directory
-        run: |
-          echo "=== Maven Test Results Directory ==="
-          echo "target/surefire-reports"
+      - name: Run Selenium Tests
+        run: mvn clean verify
 
       - name: Display Test Results Summary
         if: always()
         run: |
           echo "=== Test Results ==="
+          cat target/surefire-reports/*.txt || echo "No test results found"
           
-          # Print contents of TestSuite.txt
-          cat target/surefire-reports/TestSuite.txt || echo "TestSuite.txt not found or empty"
-
-          # Extract total test cases
-          total_tests=$(grep -oE 'Tests run: [0-9]+' target/surefire-reports/TestSuite.txt | grep -oE '[0-9]+')
+          total_tests=$(grep -oE 'Tests run: [0-9]+' target/surefire-reports/*.txt | grep -oE '[0-9]+')
           if [ -z "$total_tests" ]; then
             total_tests=0
           fi
 
-          # Extract passed test cases
-          passed_tests=$(grep -oE 'Tests run: [0-9]+, Failures: [0-9]+, Errors: [0-9]+, Skipped: [0-9]+' target/surefire-reports/TestSuite.txt | grep -oE 'Failures: [0-9]+,' | grep -oE '[0-9]+')
+          passed_tests=$(grep -oE 'Tests run: [0-9]+, Failures: [0-9]+, Errors: [0-9]+, Skipped: [0-9]+' target/surefire-reports/*.txt | grep -oE 'Failures: [0-9]+,' | grep -oE '[0-9]+')
           if [ -z "$passed_tests" ]; then
             passed_tests=0
           fi
 
-          # Extract failed test cases
-          failed_tests=$(grep -oE 'Tests run: [0-9]+, Failures: [0-9]+, Errors: [0-9]+, Skipped: [0-9]+' target/surefire-reports/TestSuite.txt | grep -oE 'Errors: [0-9]+,' | grep -oE '[0-9]+')
+          failed_tests=$(grep -oE 'Tests run: [0-9]+, Failures: [0-9]+, Errors: [0-9]+, Skipped: [0-9]+' target/surefire-reports/*.txt | grep -oE 'Errors: [0-9]+,' | grep -oE '[0-9]+')
           if [ -z "$failed_tests" ]; then
             failed_tests=0
           fi
