@@ -38,13 +38,6 @@ jobs:
 
 
 
-      - name: Check Surefire XML report
+      - name: List contents of target/surefire-reports
         run: |
-              if [[ -f "target/surefire-reports/TEST-total.xml" ]]; then
-                total_tests=$(grep -oP '(?<=<tests run=")\d+' target/surefire-reports/TEST-TestSuite.xml | tail -1)
-                echo "Total number of test cases: $total_tests"
-              else
-                echo "Surefire XML report not found. Directory contents:"
-                ls -l target/surefire-reports/
-                exit 1
-              fi
+          ls -l target/surefire-reports
