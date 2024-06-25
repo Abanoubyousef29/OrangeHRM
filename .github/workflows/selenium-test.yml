@@ -37,6 +37,11 @@ jobs:
           sudo mv /tmp/geckodriver /usr/local/bin/geckodriver
           sudo chmod +x /usr/local/bin/geckodriver
 
+      - name: Print Maven local repository path
+        run: |
+          echo "=== Maven Local Repository Path ==="
+          mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout
+
       - name: Run Selenium Tests
         run: mvn clean verify
 
