@@ -3,10 +3,10 @@ name: Maven Build and Test
 on:
   push:
     branches:
-      - master  # Trigger on push to the main branch
+      - main  # Trigger on push to the main branch
   pull_request:
     branches:
-      - master  # Trigger on pull requests targeting the main branch
+      - main  # Trigger on pull requests targeting the main branch
 
 jobs:
   build-and-test:
@@ -38,10 +38,18 @@ jobs:
           sudo chmod +x /usr/local/bin/geckodriver
 
       - name: Run Selenium Tests
-        run: mvn clean verify
+        run: |
+          mvn clean verify | tee test-output.log
+        # The `tee` command captures the output and sends it both to the console and to `test-output.log`
+
+      - name: Show Test Results
+        if: always()  # Show this step even if previous steps fail
+        run: |
+          echo "=== Test Results ==="
+          cat test-output.log  # Display the contents of the test output log
 
       - name: Archive Test Results
-        if: success()
+        if: success()  # Upload test results only if the build and tests were successful
         uses: actions/upload-artifact@v2
         with:
           name: test-results
