@@ -23,26 +23,22 @@ jobs:
           distribution: 'adopt'
           architecture: 'x64'
 
-      - name: Install dependencies
+      - name: Install Chrome and Firefox
         run: |
           sudo apt-get update
           sudo apt-get install -y firefox
           sudo apt-get install -y google-chrome-stable
-          sudo apt-get install -y xvfb  # Install XVFB for headless display
+
+      - name: Install xmlstarlet
+        run: |
+          sudo apt-get install -y xmlstarlet
 
       - name: Build with Maven and generate Surefire report
         run: mvn clean verify -Dsurefire.reportName=TEST-total
 
-      - name: Run tests in headless Firefox
-        run: |
-          xvfb-run -a firefox --headless --no-sandbox --disable-gpu https://example.com
-
-      - name: Run tests in headless Chrome
-        run: |
-          xvfb-run -a google-chrome --headless --no-sandbox --disable-gpu https://example.com
-
       - name: List contents of target/surefire-reports
-        run: ls -l target/surefire-reports
+        run: |
+          ls -l target/surefire-reports
 
       - name: Display Surefire XML report
         if: always()  # Ensure this step always runs, regardless of previous steps' outcomes
