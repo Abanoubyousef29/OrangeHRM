@@ -43,4 +43,4 @@ jobs:
       - name: Print Maven test results directory
         run: |
           echo "=== Maven Test Results Directory ==="
-          mvn help:evaluate -Dexpression=surefire.reports.directory -q -DforceStdout
+          echo "target/surefire-reports"
