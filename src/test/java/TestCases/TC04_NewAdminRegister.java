@@ -27,6 +27,7 @@ public class TC04_NewAdminRegister extends TestBase {
                 .fillConfirmPasswordText(confirmPassword)
                 .clickOnSaveButton();
 
+        Thread.sleep(1500);
         Assert.assertTrue(new P04_NewAdminRegisterPage(driver).successMsg().contains("Successfully Saved"));
 
     }

@@ -11,7 +11,7 @@ public class TC06_NewBimRegister extends TestBase {
     static String employeeID;
 
     @Test(priority = 1, description = "check that i can add new bim")
-    public void fillNewBimRegisterPage_P() {
+    public void fillNewBimRegisterPage_P() throws InterruptedException {
         employeeID = new P06_NewBimPage(driver).getEmployeeIdText();
 
         new P06_NewBimPage(driver)
@@ -20,6 +20,7 @@ public class TC06_NewBimRegister extends TestBase {
                 .fillLastNameText(lastNAme)
                 .clickOnSaveButton();
 
+        Thread.sleep(2000);
         Assert.assertTrue(new P06_NewBimPage(driver).successMsg().contains("Successfully Saved"));
     }
 }
