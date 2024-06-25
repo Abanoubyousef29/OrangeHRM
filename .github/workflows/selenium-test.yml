@@ -48,19 +48,19 @@ jobs:
           # Check for XML test result files
           if compgen -G "target/surefire-reports/*.xml" > /dev/null; then
             # Count total number of tests
-            total_tests=$(grep -oP '(?<=<testsuite tests=")[0-9]+' $(ls target/surefire-reports/*.xml) | tail -1)
+            total_tests=$(grep -oE '<testsuite tests="[0-9]+"' $(ls target/surefire-reports/*.xml) | grep -oE '[0-9]+' | tail -1)
             if [ -z "$total_tests" ]; then
               total_tests=0
             fi
             
             # Count number of passed tests
-            passed_tests=$(grep -oP '(?<=<testsuite tests="[0-9]+" failures="0" errors="0" skipped="0">)[0-9]+' $(ls target/surefire-reports/*.xml) | tail -1)
+            passed_tests=$(grep -oE '<testsuite tests="[0-9]+" failures="0" errors="0" skipped="0">' $(ls target/surefire-reports/*.xml) | grep -oE '[0-9]+' | tail -1)
             if [ -z "$passed_tests" ]; then
               passed_tests=0
             fi
             
             # Count number of failed tests
-            failed_tests=$(grep -oP '(?<=<testsuite tests="[0-9]+" failures="[1-9][0-9]*" errors="0" skipped="0">)[0-9]+' $(ls target/surefire-reports/*.xml) | tail -1)
+            failed_tests=$(grep -oE '<testsuite tests="[0-9]+" failures="[1-9][0-9]*" errors="0" skipped="0">' $(ls target/surefire-reports/*.xml) | grep -oE '[0-9]+' | tail -1)
             if [ -z "$failed_tests" ]; then
               failed_tests=0
             fi
