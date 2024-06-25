@@ -42,36 +42,33 @@ jobs:
           ls -l target/surefire-reports
 
       - name: Display Surefire XML report
-        if: always()  # Ensure this step always runs, regardless of previous steps' outcomes
+        if: always()
         run: |
-          echo "Contents of Surefire XML report (TEST-TestSuite.xml):"
-          cat target/surefire-reports/TEST-TestSuite.xml || echo "Surefire XML report not found."
+          echo "Contents of Surefire XML report (TEST-total.xml):"
+          cat target/surefire-reports/TEST-total.xml || echo "Surefire XML report not found."
 
       - name: Extract test results
         id: extract_results
         run: |
-          ls -l target/surefire-reports  # Verify contents of surefire-reports directory
-          passed=$(xmlstarlet sel -t -v "count(//testcase[@status='PASS'])" target/surefire-reports/TEST-TestSuite.xml)
-          failed=$(xmlstarlet sel -t -v "count(//testcase[@status='FAIL'])" target/surefire-reports/TEST-TestSuite.xml)
-          total=$(xmlstarlet sel -t -v "count(//testcase)" target/surefire-reports/TEST-TestSuite.xml)
-          echo "::set-output name=passed::$passed"
-          echo "::set-output name=failed::$failed"
-          echo "::set-output name=total::$total"
+          total_tests=$(xmlstarlet sel -t -v "/testsuite/@tests" target/surefire-reports/TEST-total.xml)
+          failed_tests=$(xmlstarlet sel -t -v "/testsuite/@failures" target/surefire-reports/TEST-total.xml)
+          skipped_tests=$(xmlstarlet sel -t -v "/testsuite/@skipped" target/surefire-reports/TEST-total.xml)
+          passed_tests=$((total_tests - failed_tests - skipped_tests))
+          echo "::set-output name=passed::$passed_tests"
+          echo "::set-output name=failed::$failed_tests"
+          echo "::set-output name=skipped::$skipped_tests"
+          echo "::set-output name=total::$total_tests"
 
       - name: Display test results summary
-        if: always()  # Ensure this step always runs, regardless of previous steps' outcomes
+        if: always()
         run: |
-          total_tests=$(xmlstarlet sel -t -v "/testsuite/@tests" /github/workspace/path/to/surefire-report.xml)
-          failed_tests=$(xmlstarlet sel -t -v "/testsuite/@failures" /github/workspace/path/to/surefire-report.xml)
-          skipped_tests=$(xmlstarlet sel -t -v "/testsuite/@skipped" /github/workspace/path/to/surefire-report.xml)
-          passed_tests=$((total_tests - failed_tests - skipped_tests))
-          echo "Total test cases: $total_tests"
-          echo "Passed: $passed_tests"
-          echo "Failed: $failed_tests"
-          echo "Skipped: $skipped"
+          echo "Total test cases: ${{ steps.extract_results.outputs.total }}"
+          echo "Passed: ${{ steps.extract_results.outputs.passed }}"
+          echo "Failed: ${{ steps.extract_results.outputs.failed }}"
+          echo "Skipped: ${{ steps.extract_results.outputs.skipped }}"
 
       - name: Upload Surefire XML report as artifact
-        if: success()  # Only upload artifact if previous steps were successful
+        if: success()
         uses: actions/upload-artifact@v2
         with:
           name: surefire-reports
