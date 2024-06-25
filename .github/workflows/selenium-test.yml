@@ -3,10 +3,10 @@ name: Maven Build and Test
 on:
   push:
     branches:
-      - master  # Trigger on push to the main branch
+      - master  # Trigger on push to the master branch
   pull_request:
     branches:
-      - master  # Trigger on pull requests targeting the main branch
+      - master  # Trigger on pull requests targeting the master branch
 
 jobs:
   build-and-test:
@@ -41,4 +41,6 @@ jobs:
         run: mvn clean verify
 
       - name: Print Maven local repository path
-        run: echo "Maven results stored in: $(mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout)"
+        run: |
+          echo "=== Maven Local Repository Path ==="
+          mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout
