@@ -1,27 +1,27 @@
-name: Java 17 Test on Chrome and Firefox
+name: Maven Build and Test
 
 on:
   push:
     branches:
-      - master
+      - master  # Trigger on push to the master branch
   pull_request:
     branches:
-      - master
+      - master  # Trigger on pull requests targeting the master branch
 
 jobs:
-  test:
-    name: Test on Chrome and Firefox
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up JDK 17
+      - name: Set up JDK
         uses: actions/setup-java@v2
         with:
           java-version: '17'
-          distribution: 'adopt'  # Add this line to specify the distribution
+          distribution: 'adopt'
+          architecture: 'x64'
 
       - name: Install Chrome and Firefox
         run: |
@@ -32,19 +32,19 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y google-chrome-stable
 
+
       - name: Build with Maven and generate Surefire report
         run: mvn clean verify -Dsurefire.reportName=TEST-total
 
-      - name: List directory contents
-        run: ls -R
+
 
       - name: Check Surefire XML report
         run: |
-          if [[ -f "target/surefire-reports/TEST-total.xml" ]]; then
-            total_tests=$(grep -oP '(?<=<tests run=")\d+' target/surefire-reports/TEST-total.xml | tail -1)
-            echo "Total number of test cases: $total_tests"
-          else
-            echo "Surefire XML report not found. Directory contents:"
-            ls -l target/surefire-reports/
-            exit 1
-          fi
+              if [[ -f "target/surefire-reports/TEST-total.xml" ]]; then
+                total_tests=$(grep -oP '(?<=<tests run=")\d+' target/surefire-reports/TEST-TestSuite.xml | tail -1)
+                echo "Total number of test cases: $total_tests"
+              else
+                echo "Surefire XML report not found. Directory contents:"
+                ls -l target/surefire-reports/
+                exit 1
+              fi
