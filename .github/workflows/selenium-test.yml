@@ -45,24 +45,29 @@ jobs:
         run: |
           echo "=== Test Results ==="
           
-          # Count total number of tests
-          total_tests=$(grep -oP '(?<=Tests run: )[0-9]+' target/surefire-reports/test-output.log | tail -1)
-          if [ -z "$total_tests" ]; then
-            total_tests=0
+          # Check if test-output.log exists
+          if [ -f "target/surefire-reports/test-output.log" ]; then
+            # Count total number of tests
+            total_tests=$(grep -oP '(?<=Tests run: )[0-9]+' target/surefire-reports/test-output.log | tail -1)
+            if [ -z "$total_tests" ]; then
+              total_tests=0
+            fi
+            
+            # Count number of passed tests
+            passed_tests=$(grep -oP '(?<=Failures: 0, Errors: 0, Skipped: )[0-9]+' target/surefire-reports/test-output.log | tail -1)
+            if [ -z "$passed_tests" ]; then
+              passed_tests=0
+            fi
+            
+            # Count number of failed tests
+            failed_tests=$(grep -oP '(?<=Failures: )[0-9]+' target/surefire-reports/test-output.log | tail -1)
+            if [ -z "$failed_tests" ]; then
+              failed_tests=0
+            fi
+            
+            echo "Total Tests: $total_tests"
+            echo "Passed Tests: $passed_tests"
+            echo "Failed Tests: $failed_tests"
+          else
+            echo "No test output file found."
           fi
-          
-          # Count number of passed tests
-          passed_tests=$(grep -oP '(?<=Failures: 0, Errors: 0, Skipped: )[0-9]+' target/surefire-reports/test-output.log | tail -1)
-          if [ -z "$passed_tests" ]; then
-            passed_tests=0
-          fi
-          
-          # Count number of failed tests
-          failed_tests=$(grep -oP '(?<=Failures: )[0-9]+' target/surefire-reports/test-output.log | tail -1)
-          if [ -z "$failed_tests" ]; then
-            failed_tests=0
-          fi
-          
-          echo "Total Tests: $total_tests"
-          echo "Passed Tests: $passed_tests"
-          echo "Failed Tests: $failed_tests"
