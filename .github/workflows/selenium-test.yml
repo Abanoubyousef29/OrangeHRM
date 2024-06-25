@@ -46,7 +46,16 @@ jobs:
         if: always()  # Show this step even if previous steps fail
         run: |
           echo "=== Test Results ==="
-          cat test-output.log  # Display the contents of the test output log
+          # Count total number of tests
+          total_tests=$(grep -oP '(?<=Tests run: )\d+' test-output.log)
+          # Count number of passed tests
+          passed_tests=$(grep -oP '(?<=Failures: 0, Errors: 0, Skipped: )\d+' test-output.log)
+          # Count number of failed tests
+          failed_tests=$(grep -oP '(?<=Failures: )\d+' test-output.log)
+          
+          echo "Total Tests: $total_tests"
+          echo "Passed Tests: $passed_tests"
+          echo "Failed Tests: $failed_tests"
 
       - name: Archive Test Results
         if: success()  # Upload test results only if the build and tests were successful
