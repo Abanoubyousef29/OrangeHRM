@@ -23,15 +23,19 @@ jobs:
           distribution: 'adopt'
           architecture: 'x64'
 
-      - name: Install Chrome
+      - name: Install Chrome and Firefox
         run: |
           sudo apt-get update
+          sudo apt-get install -y firefox
           sudo apt-get install -y google-chrome-stable
 
-      - name: Start headless Chrome and build with Maven
+      - name: Install xmlstarlet and xvfb
         run: |
-          google-chrome --version  # Verify Chrome version
-          mvn clean verify -Dsurefire.reportName=TEST-total
+          sudo apt-get install -y xmlstarlet xvfb
+
+      - name: Start xvfb and build with Maven
+        run: |
+          xvfb-run --auto-servernum mvn clean verify -Dsurefire.reportName=TEST-total
 
       - name: List contents of target/surefire-reports
         run: |
