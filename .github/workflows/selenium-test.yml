@@ -38,30 +38,31 @@ jobs:
           sudo chmod +x /usr/local/bin/geckodriver
 
       - name: Run Selenium Tests
-        run: mvn clean verify > test-output.log || true
-
-      - name: Archive Test Results
-        if: success()
-        uses: actions/upload-artifact@v2
-        with:
-          name: test-results
-          path: target/surefire-reports
+        run: mvn clean verify
 
       - name: Display Test Results Summary
         if: always()
         run: |
           echo "=== Test Results ==="
+          
           # Count total number of tests
-          total_tests=$(grep -oP '(?<=Tests run: )\d+' test-output.log)
+          total_tests=$(grep -oP '(?<=Tests run: )[0-9]+' target/surefire-reports/test-output.log | tail -1)
+          if [ -z "$total_tests" ]; then
+            total_tests=0
+          fi
+          
           # Count number of passed tests
-          passed_tests=$(grep -oP '(?<=Failures: 0, Errors: 0, Skipped: )\d+' test-output.log)
+          passed_tests=$(grep -oP '(?<=Failures: 0, Errors: 0, Skipped: )[0-9]+' target/surefire-reports/test-output.log | tail -1)
+          if [ -z "$passed_tests" ]; then
+            passed_tests=0
+          fi
+          
           # Count number of failed tests
-          failed_tests=$(grep -oP '(?<=Failures: )\d+' test-output.log)
+          failed_tests=$(grep -oP '(?<=Failures: )[0-9]+' target/surefire-reports/test-output.log | tail -1)
+          if [ -z "$failed_tests" ]; then
+            failed_tests=0
+          fi
           
           echo "Total Tests: $total_tests"
           echo "Passed Tests: $passed_tests"
           echo "Failed Tests: $failed_tests"
-
-      - name: Cleanup
-        run: |
-          rm -f test-output.log
