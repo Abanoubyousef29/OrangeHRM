@@ -1,6 +1,5 @@
 package TestCases;
 
-import common.MyScreenRecorder;
 import drivers.DriverFactory;
 import drivers.DriverHolder;
 import org.openqa.selenium.WebDriver;
@@ -19,7 +18,7 @@ public class TestBase {
     @Parameters("browserName")
     public void openHomePage(@Optional("defaultBrowser") String browserName) throws Exception {
         // Start Recording
-        MyScreenRecorder.startRecording("Sprint 1");
+        //MyScreenRecorder.startRecording("Sprint 1");
 
         driver = DriverFactory.getNewInstance(browserName);
         DriverHolder.setDriver(driver);
@@ -34,6 +33,6 @@ public class TestBase {
         if (driver!= null){
             driver.quit();
         }
-        MyScreenRecorder.stopRecording();
+       // MyScreenRecorder.stopRecording();
     }
 }

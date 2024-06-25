@@ -1,10 +1,8 @@
 package TestCases;
 
-import Pages.*;
-import org.testng.annotations.Test;
+import Pages.P01_LoginPage;
 import org.testng.Assert;
-
-import static Pages.PageBase.captureScreenshot;
+import org.testng.annotations.Test;
 
 public class TC01_Login extends TestBase {
 
@@ -19,7 +17,7 @@ public class TC01_Login extends TestBase {
         new P01_LoginPage(driver).inputEmail(email).inputPassword(password).clickLoginButton();
 
         // Take screen shot
-        captureScreenshot(driver,"screenshot after login ");
+        //captureScreenshot(driver,"screenshot after login ");
 
         Assert.assertFalse(new P01_LoginPage(driver).loginButtonIsDisplayed());
 
