@@ -1,4 +1,4 @@
-name: Maven Build and Test
+name: Maven Build and Test with Xvfb
 
 on:
   push:
@@ -23,18 +23,24 @@ jobs:
           distribution: 'adopt'
           architecture: 'x64'
 
-      - name: Install Chrome and Firefox
+      - name: Install Chrome, Firefox, and Xvfb
         run: |
           sudo apt-get update
           sudo apt-get install -y firefox
-          wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-          sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-          sudo apt-get update
           sudo apt-get install -y google-chrome-stable
+          sudo apt-get install -y xvfb
+          sudo apt-get install -y xorg
+          sudo apt-get install -y dbus-x11
 
       - name: Install xmlstarlet
         run: |
           sudo apt-get install -y xmlstarlet
+
+      - name: Start Xvfb
+        run: |
+          export DISPLAY=:99
+          sudo Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+          sleep 3  # Give Xvfb some time to start
 
       - name: Build with Maven and generate Surefire report
         run: mvn clean verify -Dsurefire.reportName=TEST-total
