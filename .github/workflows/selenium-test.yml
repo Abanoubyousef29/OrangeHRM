@@ -61,12 +61,14 @@ jobs:
       - name: Display test results summary
         if: always()  # Ensure this step always runs, regardless of previous steps' outcomes
         run: |
-          total_tests=$(xmlstarlet sel -t -v "/testsuite/@tests" path/to/surefire-report.xml)
-          failed_tests=$(xmlstarlet sel -t -v "/testsuite/@failures" path/to/surefire-report.xml)
-          passed_tests=$((total_tests - failed_tests))
-          echo "Total test cases: $total"
-          echo "Passed: $passed"
-          echo "Failed: $failed"
+          total_tests=$(xmlstarlet sel -t -v "/testsuite/@tests" /github/workspace/path/to/surefire-report.xml)
+          failed_tests=$(xmlstarlet sel -t -v "/testsuite/@failures" /github/workspace/path/to/surefire-report.xml)
+          skipped_tests=$(xmlstarlet sel -t -v "/testsuite/@skipped" /github/workspace/path/to/surefire-report.xml)
+          passed_tests=$((total_tests - failed_tests - skipped_tests))
+          echo "Total test cases: $total_tests"
+          echo "Passed: $passed_tests"
+          echo "Failed: $failed_tests"
+          echo "Skipped: $skipped"
 
       - name: Upload Surefire XML report as artifact
         if: success()  # Only upload artifact if previous steps were successful
