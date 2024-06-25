@@ -19,18 +19,17 @@ public class DriverFactory {
             case "chrome-headless":
                 ChromeOptions chromeOptions = new ChromeOptions();
                 chromeOptions.addArguments("--headless");
-                chromeOptions.addArguments("--no-sandbox"); // Required for GitHub Actions
-                chromeOptions.addArguments("start-maximized");
-                chromeOptions.addArguments("--disable-web-security");
-                chromeOptions.addArguments("--no-proxy-server");
-                chromeOptions.addArguments("--remote-allow-origins=*");
+                chromeOptions.addArguments("--no-sandbox");
+                chromeOptions.addArguments("--disable-gpu");
+                chromeOptions.addArguments("--disable-dev-shm-usage");
+                chromeOptions.addArguments("--remote-debugging-port=9222");
                 return new ChromeDriver(chromeOptions);
             case "firefox":
                 return new FirefoxDriver();
             case "firefox-headless":
                 FirefoxBinary firefoxBinary = new FirefoxBinary();
                 firefoxBinary.addCommandLineOptions("--headless");
-                firefoxBinary.addCommandLineOptions("--no-sandbox"); // Required for GitHub Actions
+                firefoxBinary.addCommandLineOptions("--no-sandbox");
                 firefoxBinary.addCommandLineOptions("--window-size=1280x720");
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
                 firefoxOptions.setBinary(firefoxBinary);
