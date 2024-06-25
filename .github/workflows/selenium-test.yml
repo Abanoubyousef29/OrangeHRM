@@ -43,14 +43,14 @@ jobs:
         if: always()  # Ensure this step always runs, regardless of previous steps' outcomes
         run: |
           echo "Contents of Surefire XML report (TEST-total.xml):"
-          cat target/surefire-reports/TEST-total.xml || echo "Surefire XML report not found."
+          cat target/surefire-reports/testng-results.xml || echo "Surefire XML report not found."
 
       - name: Extract test results
         id: extract_results
         run: |
-          passed=$(xmlstarlet sel -t -v "count(//testcase[@status='passed'])" target/surefire-reports/TEST-total.xml)
-          failed=$(xmlstarlet sel -t -v "count(//testcase[@status='failed'])" target/surefire-reports/TEST-total.xml)
-          total=$(xmlstarlet sel -t -v "count(//testcase)" target/surefire-reports/TEST-total.xml)
+          passed=$(xmlstarlet sel -t -v "count(//testcase[@status='passed'])" target/surefire-reports/testng-results.xmll)
+          failed=$(xmlstarlet sel -t -v "count(//testcase[@status='failed'])" target/surefire-reports/testng-results.xml)
+          total=$(xmlstarlet sel -t -v "count(//testcase)" target/surefire-reports/testng-results.xml)
           echo "::set-output name=passed::$passed"
           echo "::set-output name=failed::$failed"
           echo "::set-output name=total::$total"
