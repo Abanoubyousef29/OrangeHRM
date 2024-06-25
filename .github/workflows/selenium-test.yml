@@ -38,22 +38,30 @@ jobs:
           sudo chmod +x /usr/local/bin/geckodriver
 
       - name: Run Selenium Tests
-        run: |
-          mvn clean verify | tee test-output.log
+        run: mvn clean verify > test-output.log || true
 
-      - name: Show Test Results
-        if: always()  # Show this step even if previous steps fail
+      - name: Archive Test Results
+        if: success()
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-results
+          path: target/surefire-reports
+
+      - name: Display Test Results Summary
+        if: always()
         run: |
           echo "=== Test Results ==="
-          cat test-output.log  # Debugging: Display the contents of the log file
-
           # Count total number of tests
-          total_tests=$(grep -oP 'Tests run: \K\d+' test-output.log)
+          total_tests=$(grep -oP '(?<=Tests run: )\d+' test-output.log)
           # Count number of passed tests
-          passed_tests=$(grep -oP 'Tests run: \d+, Failures: 0, Errors: 0, Skipped: \K\d+' test-output.log)
+          passed_tests=$(grep -oP '(?<=Failures: 0, Errors: 0, Skipped: )\d+' test-output.log)
           # Count number of failed tests
-          failed_tests=$(grep -oP 'Failures: \K\d+' test-output.log)
+          failed_tests=$(grep -oP '(?<=Failures: )\d+' test-output.log)
           
           echo "Total Tests: $total_tests"
           echo "Passed Tests: $passed_tests"
           echo "Failed Tests: $failed_tests"
+
+      - name: Cleanup
+        run: |
+          rm -f test-output.log
