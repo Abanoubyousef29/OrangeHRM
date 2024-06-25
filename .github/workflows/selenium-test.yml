@@ -46,8 +46,7 @@ jobs:
         run: mvn clean verify -Dsurefire.reportName=TEST-total
 
       - name: List contents of target/surefire-reports
-        run: |
-          ls -l target/surefire-reports
+        run: ls -l target/surefire-reports
 
       - name: Display Surefire XML report
         if: always()  # Ensure this step always runs, regardless of previous steps' outcomes
