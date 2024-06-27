@@ -35,9 +35,8 @@ jobs:
 
       - name: Install ChromeDriver
         run: |
-          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
-          CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
-          wget -N https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
+          CHROMEDRIVER_VERSION="98.0.4758.80"  # Replace with a known working version
+          wget -N https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip || sleep 15 && wget -N https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip || sleep 15 && wget -N https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip || echo "Failed to download Chromedriver after multiple retries." && exit 1
           unzip chromedriver_linux64.zip
           sudo mv -f chromedriver /usr/local/bin/chromedriver
           sudo chmod +x /usr/local/bin/chromedriver
@@ -51,9 +50,9 @@ jobs:
 
       - name: Install GeckoDriver
         run: |
-          GECKODRIVER_VERSION=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest | grep 'tag_name' | cut -d\" -f4)
-          wget https://github.com/mozilla/geckodriver/releases/download/$GECKODRIVER_VERSION/geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz
-          tar -xzf geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz
+          GECKODRIVER_VERSION="0.30.0"  # Replace with a known working version
+          wget https://github.com/mozilla/geckodriver/releases/download/v$GECKODRIVER_VERSION/geckodriver-v$GECKODRIVER_VERSION-linux64.tar.gz
+          tar -xzf geckodriver-v$GECKODRIVER_VERSION-linux64.tar.gz
           sudo mv geckodriver /usr/local/bin/geckodriver
           sudo chmod +x /usr/local/bin/geckodriver
           geckodriver --version
@@ -76,6 +75,7 @@ jobs:
         run: |
           echo "Contents of Surefire XML report (testng-results.xml):"
           cat target/surefire-reports/testng-results.xml || echo "Surefire XML report not found."
+
 
       - name: Extract test results
         id: extract_results
