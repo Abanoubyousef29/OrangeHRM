@@ -19,22 +19,13 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: '17'
+          java-version: '17'  # Adjust as per your Java version requirement
           distribution: 'adopt'
           architecture: 'x64'
 
-      - name: Install Firefox and GeckoDriver
+      - name: Install Firefox as Snap
         run: |
-          sudo apt-get update
-          sudo apt-get install -y firefox
-          wget -q "https://github.com/mozilla/geckodriver/releases/download/v0.30.0/geckodriver-v0.30.0-linux64.tar.gz" -O geckodriver.tar.gz
-          tar -xzf geckodriver.tar.gz
-          sudo mv geckodriver /usr/local/bin/
-          sudo chmod +x /usr/local/bin/geckodriver
-
-      - name: Install xmlstarlet and xvfb
-        run: |
-          sudo apt-get install -y xmlstarlet xvfb
+          sudo snap install firefox
 
       - name: Start xvfb and build with Maven
         run: |
