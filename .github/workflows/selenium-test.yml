@@ -1,4 +1,4 @@
-name: Maven Build and Test
+name: Selenium Tests with Firefox
 
 on:
   push:
@@ -28,14 +28,20 @@ jobs:
         run: sudo apt-get install -y xmlstarlet
 
       - name: Install Firefox
-        run: sudo apt-get install firefox
+        run: sudo apt-get install firefox -y
 
       - name: Install GeckoDriver
         run: |
-          wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux-aarch64.tar.gz
-          tar -xzf geckodriver-v0.34.0-linux-aarch64.tar.gz
+          wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz
+          tar -xzf geckodriver-v0.34.0-linux64.tar.gz
           sudo mv geckodriver /usr/local/bin/
           sudo chmod +x /usr/local/bin/geckodriver
+
+      - name: Verify Firefox installation
+        run: firefox --version
+
+      - name: Set Firefox path for Selenium
+        run: echo "export PATH=\$PATH:/usr/local/bin" >> $GITHUB_ENV
 
       - name: Build and Test with Maven
         run: mvn clean verify  # Adjust this command based on your Maven goals
