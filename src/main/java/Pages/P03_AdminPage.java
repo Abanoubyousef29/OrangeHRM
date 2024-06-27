@@ -22,7 +22,7 @@ public class P03_AdminPage {
         return this;
     }
 
-    public P03_AdminPage fillUsernameField(String username) throws InterruptedException {
+    public P03_AdminPage fillUsernameField(String username) {
         driver.findElement(USERNAME_FIELD).sendKeys(username);
         return this;
     }

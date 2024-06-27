@@ -13,7 +13,7 @@ public class P05_BimPage {
 
     private final By ADD_NEW_PIM = By.xpath("//div[@class='orangehrm-header-container']//button[text()=' Add ']");
     private final By ID_LIST_FROM_BIM_TABLE = By.xpath("//div[@class='oxd-table-body'] / div /div / div[2] / div");
-    private final By EMPLOYEE_ID_FIELD = By.xpath("//*[text()='Employee Id']/parent::*/parent::*/*[2]/input");
+    private final By EMPLOYEE_ID_FIELD = By.xpath("//*[text()='Employee Id']/parent::*/parent::*//input");
     private final By SEARCH_BUTTON_IN_BIM = By.xpath("//button[@type='submit']");
 
 
@@ -22,13 +22,14 @@ public class P05_BimPage {
         return this;
     }
 
-    public P05_BimPage fillEmployeeIdField(String id) throws InterruptedException {
-        Thread.sleep(1000);
+    public P05_BimPage fillEmployeeIdField(String id) {
         driver.findElement(this.EMPLOYEE_ID_FIELD).sendKeys(id);
         return this;
     }
 
+
     public P05_BimPage clickSearchButton() {
+
         driver.findElement(this.SEARCH_BUTTON_IN_BIM).click();
         return this;
     }

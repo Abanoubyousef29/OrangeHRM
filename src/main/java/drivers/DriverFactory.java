@@ -20,6 +20,7 @@ public class DriverFactory {
                 ChromeOptions chromeOptions = new ChromeOptions();
                 chromeOptions.addArguments("--headless");
                 chromeOptions.addArguments("--no-sandbox");
+                chromeOptions.addArguments("window-size=1920,1080");
                 chromeOptions.addArguments("--disable-gpu");
                 chromeOptions.addArguments("--disable-dev-shm-usage");
                 chromeOptions.addArguments("--remote-debugging-port=9222");
@@ -30,7 +31,7 @@ public class DriverFactory {
                 FirefoxBinary firefoxBinary = new FirefoxBinary();
                 firefoxBinary.addCommandLineOptions("--headless");
                 firefoxBinary.addCommandLineOptions("--no-sandbox");
-                firefoxBinary.addCommandLineOptions("--window-size=1280x720");
+                firefoxBinary.addCommandLineOptions("--window-size=1920,1080");
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
                 firefoxOptions.setBinary(firefoxBinary);
                 return new FirefoxDriver(firefoxOptions);
@@ -43,7 +44,6 @@ public class DriverFactory {
                 prefs.put("credentials_enable_service", false);
                 prefs.put("profile.password_manager_enabled", false);
                 prefs.put("profile.default_content_setting_values.notifications", 2);
-
                 chromeOptions.addArguments("start-maximized");
                 chromeOptions.addArguments("--incognito");
                 chromeOptions.addArguments("--disable-web-security");

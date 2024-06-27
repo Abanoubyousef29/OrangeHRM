@@ -22,7 +22,7 @@ public class TestBase {
 
         driver = DriverFactory.getNewInstance(browserName);
         DriverHolder.setDriver(driver);
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(2));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(6));
 
         driver.get("https://opensource-demo.orangehrmlive.com/");
 
