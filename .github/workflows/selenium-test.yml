@@ -22,7 +22,7 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
           architecture: 'x64'
-          maven-version: '3.8.3'  # Specify the Maven version if needed
+          maven-version: '3.1.0'  # Specify the Maven version if needed
 
       - name: Install xmlstarlet
         run: sudo apt-get install -y xmlstarlet
