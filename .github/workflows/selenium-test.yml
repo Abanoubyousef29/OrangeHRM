@@ -44,8 +44,8 @@ jobs:
       - name: Display Surefire XML report
         if: always()
         run: |
-          echo "Contents of Surefire XML report (TEST-total.xml):"
-          cat target/surefire-reports/TEST-total.xml || echo "Surefire XML report not found."
+          echo "Contents of Surefire XML report (testng-results.xml):"
+          cat target/surefire-reports/testng-results.xml || echo "Surefire XML report not found."
 
       - name: Extract test results
         id: extract_results
