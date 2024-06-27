@@ -16,12 +16,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up JDK
+      - name: Set up JDK and Maven
         uses: actions/setup-java@v2
         with:
           java-version: '17'
           distribution: 'adopt'
           architecture: 'x64'
+          maven-version: '3.8.3'  # Specify the Maven version if needed
 
       - name: Install Firefox
         run: sudo apt-get install firefox
@@ -32,12 +33,6 @@ jobs:
           tar -xzf geckodriver-v0.34.0-linux-aarch64.tar.gz
           sudo mv geckodriver /usr/local/bin/
           sudo chmod +x /usr/local/bin/geckodriver
-
-      - name: Set up Maven
-        uses: actions/setup-java@v2
-        with:
-          java-version: '17'
-          maven-version: '3.8.3'  # Specify the Maven version if needed
 
       - name: Build and Test with Maven
         run: mvn clean verify  # Adjust this command based on your Maven goals
