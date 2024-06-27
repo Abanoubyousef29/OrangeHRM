@@ -1,3 +1,13 @@
+name: Maven Build and Test
+
+on:
+  push:
+    branches:
+      - master  # Trigger on push to the master branch
+  pull_request:
+    branches:
+      - master  # Trigger on pull requests targeting the master branch
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
