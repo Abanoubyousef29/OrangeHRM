@@ -30,10 +30,12 @@ public class DriverFactory {
             case "firefox-headless":
                 FirefoxBinary firefoxBinary = new FirefoxBinary();
                 firefoxBinary.addCommandLineOptions("--headless");
-                firefoxBinary.addCommandLineOptions("--no-sandbox");
-                firefoxBinary.addCommandLineOptions("--window-size=1920,1080");
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
                 firefoxOptions.setBinary(firefoxBinary);
+                firefoxOptions.addArguments("--window-size=1920,1080");
+                firefoxOptions.addArguments("--no-sandbox");
+                firefoxOptions.addArguments("--disable-gpu");
+                firefoxOptions.addArguments("--disable-dev-shm-usage");
                 return new FirefoxDriver(firefoxOptions);
             case "edge":
                 return new EdgeDriver();
