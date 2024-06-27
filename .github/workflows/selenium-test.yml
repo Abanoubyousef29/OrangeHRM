@@ -28,7 +28,7 @@ jobs:
         run: sudo apt-get install -y xmlstarlet
 
       - name: Install Firefox
-        run: sudo apt-get install firefox -y
+        run: sudo apt-get update && sudo apt-get install firefox -y
 
       - name: Install GeckoDriver
         run: |
