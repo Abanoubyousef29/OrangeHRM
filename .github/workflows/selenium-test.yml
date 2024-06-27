@@ -23,15 +23,24 @@ jobs:
           distribution: 'adopt'
           architecture: 'x64'
 
-      - name: Install Chrome and Firefox
+      - name: Install Firefox and GeckoDriver
+        run: |
+          wget -q "https://github.com/mozilla/geckodriver/releases/download/v0.30.0/geckodriver-v0.30.0-linux64.tar.gz" -O geckodriver.tar.gz
+          tar -xzf geckodriver.tar.gz
+          sudo mv geckodriver /usr/local/bin/
+          sudo chmod +x /usr/local/bin/geckodriver
+          sudo ln -s /usr/local/bin/geckodriver /usr/bin/geckodriver
+          wget -q "https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&lang=en-US" -O firefox.tar.bz2
+          tar -xjf firefox.tar.bz2
+          sudo mv firefox /opt/firefox-latest
+          sudo ln -s /opt/firefox-latest/firefox /usr/bin/firefox
+        env:
+          PATH: ${{ env.PATH }}:/usr/bin/geckodriver:/usr/bin/firefox
+
+      - name: Install xvfb and xmlstarlet
         run: |
           sudo apt-get update
-          sudo apt-get install -y firefox
-          sudo apt-get install -y google-chrome-stable
-
-      - name: Install xmlstarlet and xvfb
-        run: |
-          sudo apt-get install -y xmlstarlet xvfb
+          sudo apt-get install -y xvfb xmlstarlet
 
       - name: Start xvfb and build with Maven
         run: |
