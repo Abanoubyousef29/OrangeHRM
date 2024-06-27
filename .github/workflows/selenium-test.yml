@@ -1,4 +1,4 @@
-name: Maven Build and Test
+name: Selenium Tests with Firefox
 
 on:
   push:
@@ -36,8 +36,6 @@ jobs:
           tar -xzf geckodriver-v0.34.0-linux64.tar.gz
           sudo mv geckodriver /usr/local/bin/
           sudo chmod +x /usr/local/bin/geckodriver
-          echo "webdriver.gecko.driver=/usr/local/bin/geckodriver" | sudo tee -a /etc/environment
-          source /etc/environment
 
       - name: Verify Firefox installation
         run: firefox --version
