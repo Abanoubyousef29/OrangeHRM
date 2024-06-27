@@ -23,22 +23,19 @@ jobs:
           distribution: 'adopt'
           architecture: 'x64'
 
-      - name: Install required packages
+      - name: Install Firefox and GeckoDriver
         run: |
           sudo apt-get update
-          sudo apt-get install -y firefox curl
-
-      - name: Download and set up GeckoDriver
-        run: |
+          sudo apt-get install -y firefox
           curl -sSL -o geckodriver.tar.gz https://github.com/mozilla/geckodriver/releases/download/v0.30.0/geckodriver-v0.30.0-linux64.tar.gz
           tar -xzf geckodriver.tar.gz
-          sudo mv geckodriver /usr/local/bin/
-          sudo chmod +x /usr/local/bin/geckodriver
-          sudo ln -s /usr/local/bin/geckodriver /usr/bin/geckodriver
+          sudo mv geckodriver /usr/local/bin/geckodriver-v0.30.0
+          sudo chmod +x /usr/local/bin/geckodriver-v0.30.0
+          sudo ln -s -f /usr/local/bin/geckodriver-v0.30.0 /usr/bin/geckodriver
 
-      - name: Install xvfb and xmlstarlet
+      - name: Install xmlstarlet and xvfb
         run: |
-          sudo apt-get install -y xvfb xmlstarlet
+          sudo apt-get install -y xmlstarlet xvfb
 
       - name: Start xvfb and build with Maven
         run: |
