@@ -35,7 +35,11 @@ jobs:
           sudo chmod +x /usr/local/bin/geckodriver
 
       - name: Build and Test with Maven
-        run: mvn clean verify  # Adjust this command based on your Maven goals
+        run: mvn clean verify  
+
+      - name: List contents of target/surefire-reports
+        run: |
+          ls -l target/surefire-reports
 
       - name: Display Surefire XML report
         if: always()
