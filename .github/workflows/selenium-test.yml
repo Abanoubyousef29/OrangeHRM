@@ -32,7 +32,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y google-chrome-stable
           google-chrome --version
-          
+
       - name: Install ChromeDriver
         run: |
           CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
@@ -57,7 +57,6 @@ jobs:
           sudo mv geckodriver /usr/local/bin/geckodriver
           sudo chmod +x /usr/local/bin/geckodriver
           geckodriver --version
-
 
       - name: Install xvfb and xmlstarlet
         run: |
