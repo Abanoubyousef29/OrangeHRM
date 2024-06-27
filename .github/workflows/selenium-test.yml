@@ -23,11 +23,15 @@ jobs:
           distribution: 'adopt'
           architecture: 'x64'
 
-      - name: Install Firefox and Chrome
+      - name: Install Firefox
+        run: sudo apt-get install firefox
+
+      - name: Install GeckoDriver
         run: |
-          sudo apt-get update
-          sudo apt-get install firefox-geckodriver
-          sudo apt-get install google-chrome-stable
+          wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux-aarch64.tar.gz
+          tar -xzf geckodriver-v0.34.0-linux-aarch64.tar.gz
+          sudo mv geckodriver /usr/local/bin/
+          sudo chmod +x /usr/local/bin/geckodriver
 
       - name: Set up Maven
         uses: actions/setup-java@v2
