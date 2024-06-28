@@ -20,7 +20,7 @@ public class TC06_NewBimRegister extends TestBase {
                 .fillLastNameText(lastNAme)
                 .clickOnSaveButton();
 
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         Assert.assertTrue(new P06_NewBimPage(driver).successMsg().contains("Successfully Saved"));
     }
 }
