@@ -67,13 +67,10 @@ jobs:
         id: generate_markdown_table
         run: |
           echo "### Passed Test Cases:"
-          xmlstarlet sel -t -m "//test-method[@status='PASS']" -v "@name" -n target/surefire-reports/testng-results.xml
-
+          xmlstarlet sel -t -m "//test-method[@status='PASS' and not(@name=preceding::test-method[@status='PASS']/@name)]" -v "@name" -n target/surefire-reports/testng-results.xml
+          echo "------------------------------"
           echo "### Failed Test Cases:"
-          xmlstarlet sel -t -m "//test-method[@status='FAIL']" -v "@name" -n target/surefire-reports/testng-results.xml
-
-          echo "### Skupped Test Cases:"
-          xmlstarlet sel -t -m "//test-method[@status='SKIPPED']" -v "@name" -n target/surefire-reports/testng-results.xml
+          xmlstarlet sel -t -m "//test-method[@status='FAIL' and not(@name=preceding::test-method[@status='FAIL']/@name)]" -v "@name" -n target/surefire-reports/testng-results.xml
 
       - name: Upload Surefire XML report as artifact
         if: success()
