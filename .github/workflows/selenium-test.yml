@@ -24,7 +24,11 @@ jobs:
           architecture: 'x64'
           maven-version: '3.1.0'  # Specify the Maven version if needed
 
-      # Remove the installation of Chrome and Firefox
+      # Install xmlstarlet on the host machine (not needed inside Docker)
+      - name: Install xmlstarlet
+        run: sudo apt-get install -y xmlstarlet
+
+      # Pull Selenium Docker image and verify Firefox installation inside Docker
       - name: Pull Selenium Docker image
         run: docker pull selenium/standalone-firefox:latest
 
