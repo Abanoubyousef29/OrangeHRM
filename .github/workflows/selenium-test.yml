@@ -59,22 +59,21 @@ jobs:
       - name: Display test results summary
         if: always()
         run: |
-          echo "Total test cases: ${{ steps.extract_results.outputs.total }}"
-          echo "Passed: ${{ steps.extract_results.outputs.passed }}"
-          echo "Failed: ${{ steps.extract_results.outputs.failed }}"
-          echo "Skipped: ${{ steps.extract_results.outputs.skipped }}"
+          echo "Total test cases = ${{ steps.extract_results.outputs.total }}"
+          echo "Passed test cases = ${{ steps.extract_results.outputs.passed }}"
+          echo "Failed test cases = ${{ steps.extract_results.outputs.failed }}"
 
       - name: Generate Markdown table
         id: generate_markdown_table
         run: |
-          echo "| Test Case | Total | Passed | Failed | Skipped |"
-          echo "|-----------|-------|--------|--------|---------|"
-          # Extract and format test case names and results using xmlstarlet
-          xmlstarlet sel -t -m "//test-method" -v "@name" -o " | " \
-            -v "count(test-method)" -o " | " \
-            -v "count(test-method[@status='PASS'])" -o " | " \
-            -v "count(test-method[@status='FAIL'])" -o " | " \
-            -v "count(test-method[@status='SKIP'])" -n target/surefire-reports/testng-results.xml
+          echo "### Passed Test Cases:"
+          xmlstarlet sel -t -m "//test-method[@status='PASS']" -v "@name" -n target/surefire-reports/testng-results.xml
+
+          echo "### Failed Test Cases:"
+          xmlstarlet sel -t -m "//test-method[@status='FAIL']" -v "@name" -n target/surefire-reports/testng-results.xml
+
+          echo "### Skupped Test Cases:"
+          xmlstarlet sel -t -m "//test-method[@status='SKIPPED']" -v "@name" -n target/surefire-reports/testng-results.xml
 
       - name: Upload Surefire XML report as artifact
         if: success()
