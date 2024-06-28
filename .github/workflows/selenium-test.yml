@@ -64,9 +64,28 @@ jobs:
           echo "Failed: ${{ steps.extract_results.outputs.failed }}"
           echo "Skipped: ${{ steps.extract_results.outputs.skipped }}"
 
+      - name: Generate Markdown table
+        id: generate_markdown_table
+        run: |
+          echo "| Test Case | Total | Passed | Failed | Skipped |"
+          echo "|-----------|-------|--------|--------|---------|"
+          # Extract and format test case names and results using xmlstarlet
+          xmlstarlet sel -t -m "//test-method" -v "@name" -o " | " \
+            -v "count(test-method)" -o " | " \
+            -v "count(test-method[@status='PASS'])" -o " | " \
+            -v "count(test-method[@status='FAIL'])" -o " | " \
+            -v "count(test-method[@status='SKIP'])" -n target/surefire-reports/testng-results.xml
+
       - name: Upload Surefire XML report as artifact
         if: success()
         uses: actions/upload-artifact@v2
         with:
           name: surefire-reports
           path: target/surefire-reports
+          
+      - name: Upload Markdown table as artifact
+        if: success()
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-results
+          path: markdown_table.md  # Adjust the path if necessary
