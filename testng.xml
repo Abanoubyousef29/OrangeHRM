@@ -6,8 +6,8 @@
         <suite-file path="Sprint1_Chrome.xml"></suite-file>
         <suite-file path="Sprint1_Firefox.xml"></suite-file>
         <suite-file path="Sprint2_Chrome.xml"></suite-file>
-        <suite-file path="Sprint1_Firefox.xml"></suite-file>
+        <suite-file path="Sprint2_Firefox.xml"></suite-file>
         <suite-file path="Sprint3_Chrome.xml"></suite-file>
-        <suite-file path="Sprint1_Firefox.xml"></suite-file>
+        <suite-file path="Sprint3_Firefox.xml"></suite-file>
     </suite-files>
 </suite>
