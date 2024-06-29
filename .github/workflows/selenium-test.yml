@@ -102,11 +102,7 @@ jobs:
           CHROME_FAILED: $(( $(xmlstarlet sel -t -v "count(//test-method[contains(@name,'chrome')][@status='FAIL'])" target/surefire-reports/testng-results.xml) ))
           FIREFOX_PASSED: $(( $(xmlstarlet sel -t -v "count(//test-method[contains(@name,'firefox')][@status='PASS'])" target/surefire-reports/testng-results.xml) ))
           FIREFOX_FAILED: $(( $(xmlstarlet sel -t -v "count(//test-method[contains(@name,'firefox')][@status='FAIL'])" target/surefire-reports/testng-results.xml) ))
-        # Set outputs for later use
-        echo "::set-output name=chrome_passed::$CHROME_PASSED"
-        echo "::set-output name=chrome_failed::$CHROME_FAILED"
-        echo "::set-output name=firefox_passed::$FIREFOX_PASSED"
-        echo "::set-output name=firefox_failed::$FIREFOX_FAILED"
+       
 
       - name: Upload Surefire XML report as artifact
         if: success()
