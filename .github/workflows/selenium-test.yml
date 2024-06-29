@@ -1,4 +1,4 @@
-name: Selenium Tests with Firefox
+name: Selenium Tests with Firefox and Chrome
 
 on:
   push:
@@ -51,10 +51,18 @@ jobs:
           failed_tests=$(xmlstarlet sel -t -v "/testng-results/@failed" target/surefire-reports/testng-results.xml)
           skipped_tests=$(xmlstarlet sel -t -v "/testng-results/@skipped" target/surefire-reports/testng-results.xml)
           passed_tests=$(xmlstarlet sel -t -v "/testng-results/@passed" target/surefire-reports/testng-results.xml)
-          echo "::set-output name=passed::$passed_tests"
+          chrome_passed=$(xmlstarlet sel -t -v "count(//test-method[contains(@name,'chrome')][@status='PASS'])" target/surefire-reports/testng-results.xml)
+          chrome_failed=$(xmlstarlet sel -t -v "count(//test-method[contains(@name,'chrome')][@status='FAIL'])" target/surefire-reports/testng-results.xml)
+          firefox_passed=$(xmlstarlet sel -t -v "count(//test-method[contains(@name,'firefox')][@status='PASS'])" target/surefire-reports/testng-results.xml)
+          firefox_failed=$(xmlstarlet sel -t -v "count(//test-method[contains(@name,'firefox')][@status='FAIL'])" target/surefire-reports/testng-results.xml)
+          echo "::set-output name=total::$total_tests"
           echo "::set-output name=failed::$failed_tests"
           echo "::set-output name=skipped::$skipped_tests"
-          echo "::set-output name=total::$total_tests"
+          echo "::set-output name=passed::$passed_tests"
+          echo "::set-output name=chrome_passed::$chrome_passed"
+          echo "::set-output name=chrome_failed::$chrome_failed"
+          echo "::set-output name=firefox_passed::$firefox_passed"
+          echo "::set-output name=firefox_failed::$firefox_failed"
 
       - name: Display test results summary
         if: always()
@@ -62,15 +70,43 @@ jobs:
           echo "Total test cases = ${{ steps.extract_results.outputs.total }}"
           echo "Passed test cases = ${{ steps.extract_results.outputs.passed }}"
           echo "Failed test cases = ${{ steps.extract_results.outputs.failed }}"
+          echo "------------------------------"
+          echo "Chrome Test Cases:"
+          echo "1- Passed test cases = ${{ steps.extract_results.outputs.chrome_passed }}"
+          xmlstarlet sel -t -m "//test-method[@status='PASS' and contains(@name, 'chrome')]" -v "@name" -n target/surefire-reports/testng-results.xml || echo "No passed tests for Chrome"
+          echo "2- Failed test cases = ${{ steps.extract_results.outputs.chrome_failed }}"
+          xmlstarlet sel -t -m "//test-method[@status='FAIL' and contains(@name, 'chrome')]" -v "@name" -n target/surefire-reports/testng-results.xml || echo "No failed tests for Chrome"
+          echo "------------------------------"
+          echo "Firefox Test Cases:"
+          echo "1- Passed test cases = ${{ steps.extract_results.outputs.firefox_passed }}"
+          xmlstarlet sel -t -m "//test-method[@status='PASS' and contains(@name, 'firefox')]" -v "@name" -n target/surefire-reports/testng-results.xml || echo "No passed tests for Firefox"
+          echo "2- Failed test cases = ${{ steps.extract_results.outputs.firefox_failed }}"
+          xmlstarlet sel -t -m "//test-method[@status='FAIL' and contains(@name, 'firefox')]" -v "@name" -n target/surefire-reports/testng-results.xml || echo "No failed tests for Firefox"
 
       - name: Generate Markdown table
         id: generate_markdown_table
         run: |
-          echo "### Passed Test Cases:"
-          xmlstarlet sel -t -m "//test-method[@status='PASS' and not(@name=preceding::test-method[@status='PASS']/@name)]" -v "@name" -n target/surefire-reports/testng-results.xml
+          echo "### Chrome Test Cases:"
+          echo "1- Passed test cases = ${{ steps.extract_results.outputs.chrome_passed }}"
+          xmlstarlet sel -t -m "//test-method[@status='PASS' and contains(@name, 'chrome')]" -v "@name" -n target/surefire-reports/testng-results.xml || echo "No passed tests for Chrome"
+          echo "2- Failed test cases = ${{ steps.extract_results.outputs.chrome_failed }}"
+          xmlstarlet sel -t -m "//test-method[@status='FAIL' and contains(@name, 'chrome')]" -v "@name" -n target/surefire-reports/testng-results.xml || echo "No failed tests for Chrome"
           echo "------------------------------"
-          echo "### Failed Test Cases:"
-          xmlstarlet sel -t -m "//test-method[@status='FAIL' and not(@name=preceding::test-method[@status='FAIL']/@name)]" -v "@name" -n target/surefire-reports/testng-results.xml
+          echo "### Firefox Test Cases:"
+          echo "1- Passed test cases = ${{ steps.extract_results.outputs.firefox_passed }}"
+          xmlstarlet sel -t -m "//test-method[@status='PASS' and contains(@name, 'firefox')]" -v "@name" -n target/surefire-reports/testng-results.xml || echo "No passed tests for Firefox"
+          echo "2- Failed test cases = ${{ steps.extract_results.outputs.firefox_failed }}"
+          xmlstarlet sel -t -m "//test-method[@status='FAIL' and contains(@name, 'firefox')]" -v "@name" -n target/surefire-reports/testng-results.xml || echo "No failed tests for Firefox"
+        env:
+          CHROME_PASSED: $(( $(xmlstarlet sel -t -v "count(//test-method[contains(@name,'chrome')][@status='PASS'])" target/surefire-reports/testng-results.xml) ))
+          CHROME_FAILED: $(( $(xmlstarlet sel -t -v "count(//test-method[contains(@name,'chrome')][@status='FAIL'])" target/surefire-reports/testng-results.xml) ))
+          FIREFOX_PASSED: $(( $(xmlstarlet sel -t -v "count(//test-method[contains(@name,'firefox')][@status='PASS'])" target/surefire-reports/testng-results.xml) ))
+          FIREFOX_FAILED: $(( $(xmlstarlet sel -t -v "count(//test-method[contains(@name,'firefox')][@status='FAIL'])" target/surefire-reports/testng-results.xml) ))
+        # Set outputs for later use
+        echo "::set-output name=chrome_passed::$CHROME_PASSED"
+        echo "::set-output name=chrome_failed::$CHROME_FAILED"
+        echo "::set-output name=firefox_passed::$FIREFOX_PASSED"
+        echo "::set-output name=firefox_failed::$FIREFOX_FAILED"
 
       - name: Upload Surefire XML report as artifact
         if: success()
@@ -78,7 +114,7 @@ jobs:
         with:
           name: surefire-reports
           path: target/surefire-reports
-          
+
       - name: Upload Markdown table as artifact
         if: success()
         uses: actions/upload-artifact@v2
