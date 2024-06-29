@@ -3,10 +3,10 @@ name: Selenium Tests with Firefox and Chrome
 on:
   push:
     branches:
-      - master  # Trigger on push to the master branch
+      - master
   pull_request:
     branches:
-      - master  # Trigger on pull requests targeting the master branch
+      - master
 
 jobs:
   build-and-test:
@@ -22,13 +22,11 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
           architecture: 'x64'
-          maven-version: '3.1.0'  # Specify the Maven version if needed
+          maven-version: '3.1.0'
 
-      # Install xmlstarlet on the host machine (not needed inside Docker)
       - name: Install xmlstarlet
         run: sudo apt-get install -y xmlstarlet
 
-      # Pull Selenium Docker image and verify Firefox installation inside Docker
       - name: Pull Selenium Docker image
         run: docker pull selenium/standalone-firefox:latest
 
@@ -36,7 +34,7 @@ jobs:
         run: docker run --rm selenium/standalone-firefox:latest firefox --version
 
       - name: Build and Test with Maven
-        run: mvn clean verify  # Adjust this command based on your Maven goals
+        run: mvn clean verify
 
       - name: Display Surefire XML report
         if: always()
@@ -49,7 +47,6 @@ jobs:
         run: |
           total_tests=$(xmlstarlet sel -t -v "/testng-results/@total" target/surefire-reports/testng-results.xml)
           failed_tests=$(xmlstarlet sel -t -v "/testng-results/@failed" target/surefire-reports/testng-results.xml)
-          skipped_tests=$(xmlstarlet sel -t -v "/testng-results/@skipped" target/surefire-reports/testng-results.xml)
           passed_tests=$(xmlstarlet sel -t -v "/testng-results/@passed" target/surefire-reports/testng-results.xml)
           chrome_passed=$(xmlstarlet sel -t -v "count(//test-method[contains(@name,'chrome')][@status='PASS'])" target/surefire-reports/testng-results.xml)
           chrome_failed=$(xmlstarlet sel -t -v "count(//test-method[contains(@name,'chrome')][@status='FAIL'])" target/surefire-reports/testng-results.xml)
@@ -57,7 +54,6 @@ jobs:
           firefox_failed=$(xmlstarlet sel -t -v "count(//test-method[contains(@name,'firefox')][@status='FAIL'])" target/surefire-reports/testng-results.xml)
           echo "::set-output name=total::$total_tests"
           echo "::set-output name=failed::$failed_tests"
-          echo "::set-output name=skipped::$skipped_tests"
           echo "::set-output name=passed::$passed_tests"
           echo "::set-output name=chrome_passed::$chrome_passed"
           echo "::set-output name=chrome_failed::$chrome_failed"
@@ -83,6 +79,13 @@ jobs:
           echo "2- Failed test cases = ${{ steps.extract_results.outputs.firefox_failed }}"
           xmlstarlet sel -t -m "//test-method[@status='FAIL' and contains(@name, 'firefox')]" -v "@name" -n target/surefire-reports/testng-results.xml || echo "No failed tests for Firefox"
 
+      - name: Upload Surefire XML report as artifact
+        if: success()
+        uses: actions/upload-artifact@v2
+        with:
+          name: surefire-reports
+          path: target/surefire-reports
+
       - name: Generate Markdown table
         id: generate_markdown_table
         run: |
@@ -97,23 +100,10 @@ jobs:
           xmlstarlet sel -t -m "//test-method[@status='PASS' and contains(@name, 'firefox')]" -v "@name" -n target/surefire-reports/testng-results.xml || echo "No passed tests for Firefox"
           echo "2- Failed test cases = ${{ steps.extract_results.outputs.firefox_failed }}"
           xmlstarlet sel -t -m "//test-method[@status='FAIL' and contains(@name, 'firefox')]" -v "@name" -n target/surefire-reports/testng-results.xml || echo "No failed tests for Firefox"
-        env:
-          CHROME_PASSED: $(( $(xmlstarlet sel -t -v "count(//test-method[contains(@name,'chrome')][@status='PASS'])" target/surefire-reports/testng-results.xml) ))
-          CHROME_FAILED: $(( $(xmlstarlet sel -t -v "count(//test-method[contains(@name,'chrome')][@status='FAIL'])" target/surefire-reports/testng-results.xml) ))
-          FIREFOX_PASSED: $(( $(xmlstarlet sel -t -v "count(//test-method[contains(@name,'firefox')][@status='PASS'])" target/surefire-reports/testng-results.xml) ))
-          FIREFOX_FAILED: $(( $(xmlstarlet sel -t -v "count(//test-method[contains(@name,'firefox')][@status='FAIL'])" target/surefire-reports/testng-results.xml) ))
-       
-
-      - name: Upload Surefire XML report as artifact
-        if: success()
-        uses: actions/upload-artifact@v2
-        with:
-          name: surefire-reports
-          path: target/surefire-reports
-
+          
       - name: Upload Markdown table as artifact
         if: success()
         uses: actions/upload-artifact@v2
         with:
           name: test-results
-          path: markdown_table.md  # Adjust the path if necessary
+          path: markdown_table.md
