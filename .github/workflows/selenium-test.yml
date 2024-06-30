@@ -24,11 +24,9 @@ jobs:
           architecture: 'x64'
           maven-version: '3.1.0'  # Specify the Maven version if needed
 
-      # Install xmlstarlet on the host machine (not needed inside Docker)
       - name: Install xmlstarlet
         run: sudo apt-get install -y xmlstarlet
 
-      # Pull Selenium Docker image and verify Firefox installation inside Docker
       - name: Pull Selenium Docker image
         run: docker pull selenium/standalone-firefox:latest
 
@@ -43,6 +41,7 @@ jobs:
         run: |
           echo "Contents of Surefire XML report (testng-results.xml):"
           cat target/surefire-reports/testng-results.xml || echo "Surefire XML report not found."
+
       - name: Extract test results
         id: extract_results
         run: |
@@ -54,13 +53,14 @@ jobs:
           echo "::set-output name=failed::$failed_tests"
           echo "::set-output name=skipped::$skipped_tests"
           echo "::set-output name=total::$total_tests"
+
       - name: Display test results summary
         if: always()
         run: |
           echo "Total test cases = ${{ steps.extract_results.outputs.total }}"
           echo "Passed test cases = ${{ steps.extract_results.outputs.passed }}"
           echo "Failed test cases = ${{ steps.extract_results.outputs.failed }}"
-          
+
       - name: Generate Markdown table
         id: generate_markdown_table
         run: |
@@ -69,10 +69,11 @@ jobs:
           xmlstarlet sel -t -m "//test-method[@status='PASS' and not(@name=preceding::test-method[@status='PASS']/@name)]" -v "@name" -n target/surefire-reports/testng-results.xml
           echo "------------------------------"
           echo "### Failed Test Cases:"
-          if xmlstarlet sel -t -v "count(//test-method[@status='FAIL'])" target/surefire-reports/testng-results.xml >/dev/null; then
-          xmlstarlet sel -t -m "//test-method[@status='FAIL' and not(@name=preceding::test-method[@status='FAIL']/@name)]" -v "@name" -n target/surefire-reports/testng-results.xml
+          failed_tests=$(xmlstarlet sel -t -v "count(//test-method[@status='FAIL'])" target/surefire-reports/testng-results.xml)
+          if [ "$failed_tests" -gt 0 ]; then
+            xmlstarlet sel -t -m "//test-method[@status='FAIL' and not(@name=preceding::test-method[@status='FAIL']/@name)]" -v "@name" -n target/surefire-reports/testng-results.xml
           else
-          echo "No failed test cases."
+            echo "No failed test cases."
           fi
 
       - name: Upload Surefire XML report as artifact
@@ -81,7 +82,7 @@ jobs:
         with:
           name: surefire-reports
           path: target/surefire-reports
-          
+
       - name: Upload Markdown table as artifact
         if: success()
         uses: actions/upload-artifact@v2
