@@ -17,8 +17,8 @@ public class TC03_Admin extends TestBase {
 
     @Test(priority = 2, description = "check that i can search by username")
     public void searchByUserName_P() throws InterruptedException {
-        new P03_AdminPage(driver).fillUsernameField(username).clickSearchButton();
         Thread.sleep(1000);
+        new P03_AdminPage(driver).fillUsernameField(username).clickSearchButton();
         Assert.assertTrue(new P03_AdminPage(driver).usernameColumInTable().contains(username));
 
     }

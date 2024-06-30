@@ -13,6 +13,7 @@ public class TC06_NewBimRegister extends TestBase {
     @Test(priority = 1, description = "check that i can add new bim")
     public void fillNewBimRegisterPage_P() throws InterruptedException {
         employeeID = new P06_NewBimPage(driver).getEmployeeIdText();
+        Thread.sleep(1500);
 
         new P06_NewBimPage(driver)
                 .fillFirstNameText(firstNAme)
