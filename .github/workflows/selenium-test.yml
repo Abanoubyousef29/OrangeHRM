@@ -60,14 +60,21 @@ jobs:
           echo "Total test cases = ${{ steps.extract_results.outputs.total }}"
           echo "Passed test cases = ${{ steps.extract_results.outputs.passed }}"
           echo "Failed test cases = ${{ steps.extract_results.outputs.failed }}"
+          
       - name: Generate Markdown table
         id: generate_markdown_table
         run: |
+          echo "### Test Results:"
           echo "### Passed Test Cases:"
           xmlstarlet sel -t -m "//test-method[@status='PASS' and not(@name=preceding::test-method[@status='PASS']/@name)]" -v "@name" -n target/surefire-reports/testng-results.xml
           echo "------------------------------"
           echo "### Failed Test Cases:"
+          if xmlstarlet sel -t -v "count(//test-method[@status='FAIL'])" target/surefire-reports/testng-results.xml >/dev/null; then
           xmlstarlet sel -t -m "//test-method[@status='FAIL' and not(@name=preceding::test-method[@status='FAIL']/@name)]" -v "@name" -n target/surefire-reports/testng-results.xml
+          else
+          echo "No failed test cases."
+          fi
+
       - name: Upload Surefire XML report as artifact
         if: success()
         uses: actions/upload-artifact@v2
