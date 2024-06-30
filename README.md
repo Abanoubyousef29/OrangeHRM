@@ -1,6 +1,6 @@
 # OrangeHRM
 
-![https://opensource-demo.orangehrmlive.com/web/images/ohrm_branding.png?v=1711595107870)
+![ OrangeHRM ] (https://opensource-demo.orangehrmlive.com/web/images/ohrm_branding.png)
 
 ## Table of Contents
 
